@@ -1,6 +1,6 @@
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 
-const ISSUER    = process.env.COGNITO_ISSUER!;
+const ISSUER = process.env.COGNITO_ISSUER!;
 const CLIENT_ID = process.env.COGNITO_CLIENT_ID!;
 
 // Se baja el JWKS una vez y lo cachea. Si aparece un kid nuevo, lo vuelve a pedir solo.
@@ -16,20 +16,22 @@ export type Claims = {
 
 export async function verificar(cabecera?: string): Promise<Claims> {
   if (!cabecera?.startsWith('Bearer ')) {
-    throw new Error('sin token');           // → 401
+    throw new Error('sin token'); // → 401
   }
 
   // 1 · Firma, iss, exp y nbf: los revisa jwtVerify. Si algo falla, lanza.
-  const { payload } = await jwtVerify(cabecera.slice(7), jwks, { issuer: ISSUER });
+  const { payload } = await jwtVerify(cabecera.slice(7), jwks, {
+    issuer: ISSUER,
+  });
 
   // 2 · ¿Es del tipo correcto? Un id_token presentado como access_token es un ataque.
   if (payload.token_use !== 'access') {
-    throw new Error('no es un access token');   // → 401
+    throw new Error('no es un access token'); // → 401
   }
 
   // 3 · ¿Salió de un app client que reconozco? Dato complementario, no autorización.
   if (payload.client_id !== CLIENT_ID) {
-    throw new Error('app client desconocido');  // → 401
+    throw new Error('app client desconocido'); // → 401
   }
 
   return payload as unknown as Claims;

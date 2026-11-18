@@ -29,15 +29,17 @@ export class PrestamosController {
     try {
       claims = await verificar(authorization);
     } catch (e) {
-      throw new UnauthorizedException((e as Error).message);   // → 401
+      throw new UnauthorizedException((e as Error).message); // → 401
     }
 
     // ── autorización: scope y grupo, las dos cosas ──
     if (!tieneScope(claims, 'biblioteca/libros.leer')) {
-      throw new ForbiddenException('te falta el permiso biblioteca/libros.leer');  // → 403
+      throw new ForbiddenException(
+        'te falta el permiso biblioteca/libros.leer',
+      ); // → 403
     }
     if (!estaEnGrupo(claims, 'bibliotecarios')) {
-      throw new ForbiddenException('te falta el grupo bibliotecarios');  // → 403
+      throw new ForbiddenException('te falta el grupo bibliotecarios'); // → 403
     }
 
     const respuesta = await fetch(`${PRESTAMOS_URL}/prestamos`);

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { LibrosController } from './libros.controller';
 import { PrestamosController } from './prestamos.controller';
-import { PanelController } from './panel.controller';        // <- 1 · el import
+import { PanelController } from './panel.controller'; // <- 1 · el import
 
 /**
  * En Nest, existir no basta: hay que registrarse.
@@ -11,5 +11,7 @@ import { PanelController } from './panel.controller';        // <- 1 · el impor
  * mundo la primera vez: se pierden diez minutos mirando un controller que está
  * perfecto.
  */
-@Module({ controllers: [LibrosController, PrestamosController, PanelController] })   // <- 2 · y aca
+@Module({
+  controllers: [LibrosController, PrestamosController, PanelController],
+}) // <- 2 · y aca
 export class AppModule {}
